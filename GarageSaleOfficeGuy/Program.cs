@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using CommandLine;
 using OfficeGuy.APIs;
 
-
 namespace GarageSaleOfficeGuy
 {
     class Program
@@ -15,9 +14,10 @@ namespace GarageSaleOfficeGuy
             int result = -1;
             Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsed<CommandLineOptions>(o => 
             {
-                if (o.customerName == null || o.customerEmail == null || o.customerPhoneNumer == null)
+                if (o.customerName == null || o.customerPhoneNumer == null || o.amount == null || 
+                o.paymentMethod == null || o.mainDescription == null || o.secondaryDescription == null)
                 {
-                    Console.WriteLine("Error while creating invoice: Not enough argument given (name, email, phone)");
+                    Console.WriteLine("Not enough arguments given (name, phone, price, pay method, main description, secondary description)");
                     Console.ReadKey();
                     return;
                 }
@@ -38,6 +38,11 @@ namespace GarageSaleOfficeGuy
             }
 
             Console.WriteLine("Created invoice successfully!");
+            if (options.customerEmail == null)
+            {
+                Console.WriteLine("No customer email specified, not sending document.");
+                return 0;
+            }
 
             long craetedInvoiceID = createResponse.Data.DocumentID;
 
@@ -83,8 +88,7 @@ namespace GarageSaleOfficeGuy
             };
         }
 
-
-        static private Accounting_Typed_DocumentItem generateItem(float amountPaid, string mainDescription, string secondaryDescription)
+        static private Accounting_Typed_DocumentItem generateItem(float? amountPaid, string mainDescription, string secondaryDescription)
         {
             return new Accounting_Typed_DocumentItem()
             {
@@ -104,7 +108,7 @@ namespace GarageSaleOfficeGuy
                 }
             };
         }
-        static private Accounting_Typed_DocumentPayment generatePayment(float amountPaid, PaymentMethod payment)
+        static private Accounting_Typed_DocumentPayment generatePayment(float? amountPaid, PaymentMethod? payment)
         {
             Accounting_Typed_DocumentPayment paymentDoc = new Accounting_Typed_DocumentPayment()
             {
@@ -119,29 +123,29 @@ namespace GarageSaleOfficeGuy
                 case PaymentMethod.BankTransfer:
                     paymentDoc.Details_BankTransfer = new Accounting_Typed_Payment_BankTransfer();
                     break;
-                case PaymentMethod.Credit:
-                    paymentDoc.Details_CreditCard = new Accounting_Typed_Payment_CreditCard();
-                    break;
-                case PaymentMethod.Bit:
-                    paymentDoc.Details_Digital = new Accounting_Typed_Payment_Digital() 
+                case PaymentMethod.BIT:
+                    paymentDoc.Details_Other = new Accounting_Typed_Payment_Other() 
                     {
                         Type = "Bit"
                     };
                     break;
                 case PaymentMethod.PayBox:
-                    paymentDoc.Details_Digital = new Accounting_Typed_Payment_Digital()
+                    paymentDoc.Details_Other = new Accounting_Typed_Payment_Other()
                     {
                         Type = "Paybox"
                     };
                     break;
                 case PaymentMethod.PepperPay:
-                    paymentDoc.Details_Digital = new Accounting_Typed_Payment_Digital()
+                    paymentDoc.Details_Other = new Accounting_Typed_Payment_Other()
                     {
                         Type = "PepperPay"
                     };
                     break;
                 case PaymentMethod.Cheque:
                     paymentDoc.Details_Cheque = new Accounting_Typed_Payment_Cheque();
+                    break;
+                default:
+                    paymentDoc.Details_General = new Accounting_Typed_Payment_General();
                     break;
             }
 
@@ -159,11 +163,13 @@ namespace GarageSaleOfficeGuy
         {
             Accounting_Typed_DocumentDetails documentDetails = new Accounting_Typed_DocumentDetails() 
             {
-                IsDraft = true,
+                IsDraft = options.isDraft,
                 Customer = generateCustomer(options.customerName, 
                                             options.customerPhoneNumer, 
                                             options.customerEmail,
-                                            options.customerChargeVAT),
+                                            options.customerChargeVAT,
+                                            options.customerCity,
+                                            options.customerAddress),
                 SendByEmail = generateSendByEmail(options.customerEmail),
                 Language = getPreferredLanguage(options.preferredLanguage),
                 Currency = Accounting_Typed_DocumentCurrency.ILS,
@@ -194,9 +200,10 @@ namespace GarageSaleOfficeGuy
                     return Accounting_Typed_Language.Hebrew;
             }
         }
-        static private Accounting_Typed_Customer generateCustomer(string customerName, string customerPhoneNumer, string customerEmail, bool customerChargeVAT)
+        static private Accounting_Typed_Customer generateCustomer(string customerName, string customerPhoneNumer, string customerEmail, 
+                                                                    bool customerChargeVAT, string customerCity, string customerAddress)
         {
-            return new Accounting_Typed_Customer()
+            Accounting_Typed_Customer customer = new Accounting_Typed_Customer()
             {
                 Name = customerName,
                 Phone = customerPhoneNumer,
@@ -204,6 +211,18 @@ namespace GarageSaleOfficeGuy
                 NoVAT = !customerChargeVAT,
                 SearchMode = 0
              };
+
+            if (customerCity != null)
+            {
+                customer.City = customerCity;
+            }
+
+            if (customerAddress != null)
+            {
+                customer.Address = customerAddress;
+            }
+
+            return customer;
         }
 
         static private Accounting_Typed_DocumentSendByEmail generateSendByEmail(string email)

@@ -2,7 +2,7 @@
   "profiles": {
     "GarageSaleOfficeGuy": {
       "commandName": "Project",
-      "commandLineArgs": "-n edoe -p 0542599668 -e tsur.edoe@gmail.com -a 10 -P Cash -i hello"
+      "commandLineArgs": "-n edoe33 -p 0542299668 -A 10 -P PayBox -d sec -D main -m asdlahsdlh -a asdasd -c zipport"
     }
   }
 }

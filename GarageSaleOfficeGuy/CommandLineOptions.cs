@@ -4,11 +4,11 @@ namespace GarageSaleOfficeGuy
 {
     class CommandLineOptions
     {
-        [Option('a', "amount", HelpText = "Amount Customer paid.")]
-        public float amount { get; set; }
+        [Option('A', "amount", HelpText = "Amount Customer paid.")]
+        public float? amount { get; set; }
 
         [Option('P', "payment", HelpText = "Payment method (Cash, Credit, BankTransfer, Bit, PayBox, Cheque")]
-        public PaymentMethod paymentMethod { get; set; }
+        public PaymentMethod? paymentMethod { get; set; }
 
         [Option('D', "firstDescription", HelpText = "Main description")]
         public string mainDescription { get; set; }
@@ -25,6 +25,12 @@ namespace GarageSaleOfficeGuy
         [Option('e', "email", HelpText = "Customer email.")]
         public string customerEmail { get; set; }
 
+        [Option('c', "city", HelpText = "Customer city")]
+        public string customerCity { get; set; }
+
+        [Option('a', "address", HelpText = "Customer address")]
+        public string customerAddress { get; set; }
+
         [Option('v', "chargeVAT", Default = true, HelpText = "Should the customer pay VAT.")]
         public bool customerChargeVAT { get; set; }
 
@@ -33,5 +39,8 @@ namespace GarageSaleOfficeGuy
 
         [Option('m', "messageForCustomer", Default = "", HelpText = "The description for the invoice.")]
         public string messageForCustomer { get; set; }
+
+        [Option('i', "isDraft", Default = true, HelpText = "Is document draft?")]
+        public bool isDraft { get; set; }
     }
 }

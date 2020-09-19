@@ -4,9 +4,8 @@ namespace GarageSaleOfficeGuy
     enum PaymentMethod
     {
         Cash,
-        Credit,
         BankTransfer,
-        Bit,
+        BIT,
         PayBox,
         PepperPay,
         Cheque
