@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GarageSaleOfficeGuy": {
+      "commandName": "Project",
+      "commandLineArgs": "-n edoe -p 0542599668 -e tsur.edoe@gmail.com -a 10 -P Cash -i hello"
+    }
+  }
+}

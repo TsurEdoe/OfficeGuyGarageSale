@@ -1,0 +1,17 @@
+C:\Users\tsure\source\repos\GarageSaleOfficeGuy\GarageSaleOfficeGuy\bin\Release\netcoreapp3.1\GarageSaleOfficeGuy.exe
+C:\Users\tsure\source\repos\GarageSaleOfficeGuy\GarageSaleOfficeGuy\bin\Release\netcoreapp3.1\GarageSaleOfficeGuy.deps.json
+C:\Users\tsure\source\repos\GarageSaleOfficeGuy\GarageSaleOfficeGuy\bin\Release\netcoreapp3.1\GarageSaleOfficeGuy.runtimeconfig.json
+C:\Users\tsure\source\repos\GarageSaleOfficeGuy\GarageSaleOfficeGuy\bin\Release\netcoreapp3.1\GarageSaleOfficeGuy.runtimeconfig.dev.json
+C:\Users\tsure\source\repos\GarageSaleOfficeGuy\GarageSaleOfficeGuy\bin\Release\netcoreapp3.1\GarageSaleOfficeGuy.dll
+C:\Users\tsure\source\repos\GarageSaleOfficeGuy\GarageSaleOfficeGuy\bin\Release\netcoreapp3.1\GarageSaleOfficeGuy.pdb
+C:\Users\tsure\source\repos\GarageSaleOfficeGuy\GarageSaleOfficeGuy\bin\Release\netcoreapp3.1\CommandLine.dll
+C:\Users\tsure\source\repos\GarageSaleOfficeGuy\GarageSaleOfficeGuy\bin\Release\netcoreapp3.1\Newtonsoft.Json.dll
+C:\Users\tsure\source\repos\GarageSaleOfficeGuy\GarageSaleOfficeGuy\bin\Release\netcoreapp3.1\OfficeGuy.APIs.dll
+C:\Users\tsure\source\repos\GarageSaleOfficeGuy\GarageSaleOfficeGuy\obj\Release\netcoreapp3.1\GarageSaleOfficeGuy.csprojAssemblyReference.cache
+C:\Users\tsure\source\repos\GarageSaleOfficeGuy\GarageSaleOfficeGuy\obj\Release\netcoreapp3.1\GarageSaleOfficeGuy.AssemblyInfoInputs.cache
+C:\Users\tsure\source\repos\GarageSaleOfficeGuy\GarageSaleOfficeGuy\obj\Release\netcoreapp3.1\GarageSaleOfficeGuy.AssemblyInfo.cs
+C:\Users\tsure\source\repos\GarageSaleOfficeGuy\GarageSaleOfficeGuy\obj\Release\netcoreapp3.1\GarageSaleOfficeGuy.csproj.CoreCompileInputs.cache
+C:\Users\tsure\source\repos\GarageSaleOfficeGuy\GarageSaleOfficeGuy\obj\Release\netcoreapp3.1\GarageSaleOfficeGuy.csproj.CopyComplete
+C:\Users\tsure\source\repos\GarageSaleOfficeGuy\GarageSaleOfficeGuy\obj\Release\netcoreapp3.1\GarageSaleOfficeGuy.dll
+C:\Users\tsure\source\repos\GarageSaleOfficeGuy\GarageSaleOfficeGuy\obj\Release\netcoreapp3.1\GarageSaleOfficeGuy.pdb
+C:\Users\tsure\source\repos\GarageSaleOfficeGuy\GarageSaleOfficeGuy\obj\Release\netcoreapp3.1\GarageSaleOfficeGuy.genruntimeconfig.cache

@@ -1,0 +1,84 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v3.1",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v3.1": {
+      "GarageSaleOfficeGuy/1.0.0": {
+        "dependencies": {
+          "CommandLineParser": "2.8.0",
+          "OfficeGuy.APIs": "2.0.0"
+        },
+        "runtime": {
+          "GarageSaleOfficeGuy.dll": {}
+        }
+      },
+      "CommandLineParser/2.8.0": {
+        "runtime": {
+          "lib/netstandard2.0/CommandLine.dll": {
+            "assemblyVersion": "2.8.0.0",
+            "fileVersion": "2.8.0.0"
+          }
+        }
+      },
+      "Newtonsoft.Json/12.0.3": {
+        "runtime": {
+          "lib/netstandard2.0/Newtonsoft.Json.dll": {
+            "assemblyVersion": "12.0.0.0",
+            "fileVersion": "12.0.3.23909"
+          }
+        }
+      },
+      "OfficeGuy.APIs/2.0.0": {
+        "dependencies": {
+          "Newtonsoft.Json": "12.0.3",
+          "System.ComponentModel.Annotations": "4.7.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/OfficeGuy.APIs.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "System.ComponentModel.Annotations/4.7.0": {}
+    }
+  },
+  "libraries": {
+    "GarageSaleOfficeGuy/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "CommandLineParser/2.8.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-eco2HlKQBY4Joz9odHigzGpVzv6pjsXnY5lziioMveQxr+i2Z7xYcIOMeZTgYiqnMtMAbXMXsVhrNfWO5vJS8Q==",
+      "path": "commandlineparser/2.8.0",
+      "hashPath": "commandlineparser.2.8.0.nupkg.sha512"
+    },
+    "Newtonsoft.Json/12.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-6mgjfnRB4jKMlzHSl+VD+oUc1IebOZabkbyWj2RiTgWwYPPuaK1H97G1sHqGwPlS5npiF5Q0OrxN1wni2n5QWg==",
+      "path": "newtonsoft.json/12.0.3",
+      "hashPath": "newtonsoft.json.12.0.3.nupkg.sha512"
+    },
+    "OfficeGuy.APIs/2.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-C3Gub7NNF0/fZiNWm28mDvP5kNw/WpE60vK67N9ONsXbfrr4aKtyVep95SbeMnsVneBflm96EATKQaiXjy9r8g==",
+      "path": "officeguy.apis/2.0.0",
+      "hashPath": "officeguy.apis.2.0.0.nupkg.sha512"
+    },
+    "System.ComponentModel.Annotations/4.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-0YFqjhp/mYkDGpU0Ye1GjE53HMp9UVfGN7seGpAMttAC0C40v5gw598jCgpbBLMmCo0E5YRLBv5Z2doypO49ZQ==",
+      "path": "system.componentmodel.annotations/4.7.0",
+      "hashPath": "system.componentmodel.annotations.4.7.0.nupkg.sha512"
+    }
+  }
+}

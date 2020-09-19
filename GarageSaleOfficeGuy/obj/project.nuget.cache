@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "qHJH9rvljGQfWdHf4yrS+DnQsX6iTTxukpueK22/n8RUmBfUIKf1oS1zt+qK7ITkzESO5xPLekFwz48HoHfHxg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\tsure\\source\\repos\\GarageSaleOfficeGuy\\GarageSaleOfficeGuy\\GarageSaleOfficeGuy.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\tsure\\.nuget\\packages\\commandlineparser\\2.8.0\\commandlineparser.2.8.0.nupkg.sha512",
+    "C:\\Users\\tsure\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512",
+    "C:\\Users\\tsure\\.nuget\\packages\\officeguy.apis\\2.0.0\\officeguy.apis.2.0.0.nupkg.sha512",
+    "C:\\Users\\tsure\\.nuget\\packages\\system.componentmodel.annotations\\4.7.0\\system.componentmodel.annotations.4.7.0.nupkg.sha512"
+  ],
+  "logs": []
+}
