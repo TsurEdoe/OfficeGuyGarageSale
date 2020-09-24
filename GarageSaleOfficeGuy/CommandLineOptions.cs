@@ -29,10 +29,10 @@ namespace GarageSaleOfficeGuy
         public string customerCity { get; set; }
 
         [Option('a', "address", HelpText = "Customer address")]
-        public string customerAddress { get; set; }
+        public string customerAddress{ get; set; }
 
-        [Option('v', "chargeVAT", Default = true, HelpText = "Should the customer pay VAT.")]
-        public bool customerChargeVAT { get; set; }
+        [Option('v', "vatFree", HelpText = "Should the customer pay VAT.")]
+        public bool vatFree { get; set; }
 
         [Option('l', "preferredLanguage", Default = "hebrew", HelpText = "Preferred language to display invoice (hebrew/arabic/english/spanish).")]
         public string preferredLanguage { get; set; }
@@ -40,7 +40,7 @@ namespace GarageSaleOfficeGuy
         [Option('m', "messageForCustomer", Default = "", HelpText = "The description for the invoice.")]
         public string messageForCustomer { get; set; }
 
-        [Option('i', "isDraft", Default = true, HelpText = "Is document draft?")]
+        [Option('i', "isDraft", HelpText = "Is document draft?")]
         public bool isDraft { get; set; }
     }
 }

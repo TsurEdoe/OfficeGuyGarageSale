@@ -59,8 +59,13 @@ namespace GarageSaleOfficeGuy
                 Console.WriteLine("Sent invoice successfully!");
             }
 
-            //return createResponse.Data.DocumentNumber;
-            return 50000;
+            if (options.isDraft)
+            {
+                Console.WriteLine("Invoice is draft, not returning the invoice id");
+                return 0;
+            }
+
+            return createResponse.Data.DocumentNumber;
         }
 
         static private Accounting_Documents_Send_Request generateSendDocumentRequest(long documentID, CommandLineOptions options)
@@ -121,7 +126,10 @@ namespace GarageSaleOfficeGuy
                     paymentDoc.Details_Cash = new Accounting_Typed_Payment_Cash();
                     break;
                 case PaymentMethod.BankTransfer:
-                    paymentDoc.Details_BankTransfer = new Accounting_Typed_Payment_BankTransfer();
+                    paymentDoc.Details_Other = new Accounting_Typed_Payment_Other()
+                    {
+                        Type = "העברה בנקאית"
+                    };
                     break;
                 case PaymentMethod.BIT:
                     paymentDoc.Details_Other = new Accounting_Typed_Payment_Other() 
@@ -142,7 +150,10 @@ namespace GarageSaleOfficeGuy
                     };
                     break;
                 case PaymentMethod.Cheque:
-                    paymentDoc.Details_Cheque = new Accounting_Typed_Payment_Cheque();
+                    paymentDoc.Details_Other = new Accounting_Typed_Payment_Other()
+                    {
+                        Type = "צ'ק"
+                    };
                     break;
                 default:
                     paymentDoc.Details_General = new Accounting_Typed_Payment_General();
@@ -167,7 +178,7 @@ namespace GarageSaleOfficeGuy
                 Customer = generateCustomer(options.customerName, 
                                             options.customerPhoneNumer, 
                                             options.customerEmail,
-                                            options.customerChargeVAT,
+                                            options.vatFree,
                                             options.customerCity,
                                             options.customerAddress),
                 SendByEmail = generateSendByEmail(options.customerEmail),
@@ -201,14 +212,14 @@ namespace GarageSaleOfficeGuy
             }
         }
         static private Accounting_Typed_Customer generateCustomer(string customerName, string customerPhoneNumer, string customerEmail, 
-                                                                    bool customerChargeVAT, string customerCity, string customerAddress)
+                                                                    bool vatFree, string customerCity, string customerAddress)
         {
             Accounting_Typed_Customer customer = new Accounting_Typed_Customer()
             {
                 Name = customerName,
                 Phone = customerPhoneNumer,
                 EmailAddress = customerEmail,
-                NoVAT = !customerChargeVAT,
+                NoVAT = vatFree,
                 SearchMode = 0
              };
 
