@@ -29,6 +29,15 @@ namespace GarageSaleOfficeGuy
 
         static private long? sendInvoiceToCustomer(CommandLineOptions options)
         {
+            if (options.isTourismInvoice)
+            {
+                if(!replaceLogo(true))
+                {
+                    Console.WriteLine("Failed replacing logo in website");
+                    return -1;
+                }
+            }
+
             Accounting_Documents_Create_Request invoiceCreateRequest = createInvoiceDocument(options);
             Response_Accounting_Documents_Create_Response createResponse = apiClient.AccountingDocumentsCreateAsync(invoiceCreateRequest).Result;
             if (createResponse.Status != ResponseStatus.Success)
@@ -49,6 +58,15 @@ namespace GarageSaleOfficeGuy
             Accounting_Documents_Send_Request send_Request = generateSendDocumentRequest(craetedInvoiceID, options);
             Core_APIEmptyResponse sendResponse = apiClient.AccountingDocumentsSendAsync(send_Request).Result;
 
+            if (options.isTourismInvoice)
+            {
+                if (!replaceLogo(false))
+                {
+                    Console.WriteLine("Failed replacing logo in website");
+                    return -1;
+                }
+            }
+
             if (sendResponse.Status != ResponseStatus.Success)
             {
                 Console.WriteLine("Failed sending invoice: " + createResponse.UserErrorMessage);
@@ -66,6 +84,21 @@ namespace GarageSaleOfficeGuy
             }
 
             return createResponse.Data.DocumentNumber;
+        }
+
+        /**
+         * If changeToTourism = true, changes to tourism logo. Else, changes to GarageSale logo
+         */
+        static private bool replaceLogo(bool changeToTourism)
+        {
+            string resourceName = changeToTourism ? "tourism" : "garage_sale";
+            Console.WriteLine("Replacing logo in website to " + resourceName + " logo");
+            Website_Companies_Update_Request request = new Website_Companies_Update_Request
+            {
+                Company = generateGarageSaleCompanyDetails(resourceName),
+                Credentials = generateGarageSaleCredentials()
+            };
+            return apiClient.WebsiteCompaniesUpdateAsync(request).Result.Status == ResponseStatus.Success;
         }
 
         static private Accounting_Documents_Send_Request generateSendDocumentRequest(long documentID, CommandLineOptions options)
@@ -161,6 +194,32 @@ namespace GarageSaleOfficeGuy
             }
 
             return paymentDoc;
+        }
+
+        static private Website_Typed_Company generateGarageSaleCompanyDetails(string resourceName)
+        {
+            byte[] chosenLogo = (byte[])Properties.Resources.ResourceManager.GetObject(resourceName);
+
+            return new Website_Typed_Company()
+            {
+                Name = "מאירה צור",
+                EmailAddress = "tsur.meira@gmail.com",
+                Country = "ישראל",
+                Address = "מושב ציפורי",
+                Phone = "0506890998",
+                Fax = null,
+                Title = "הנעה וליווי עסקים וקהילות בתחומי קיימות ותיירות",
+                CorporateNumber = "028466563",
+                English_Name = null,
+                English_Address = null,
+                English_Country = null,
+                English_Phone = null,
+                English_Fax = null,
+                English_Title = null,
+                CompanyType = CompanyType.LicensedDealer,
+                Logo = chosenLogo,
+                Website = null
+            };
         }
 
         static private Core_APICredentials generateGarageSaleCredentials()

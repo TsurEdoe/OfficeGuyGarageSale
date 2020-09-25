@@ -4,6 +4,9 @@ namespace GarageSaleOfficeGuy
 {
     class CommandLineOptions
     {
+        [Option('t', "tourism", HelpText = "Use this option to send a tourism invoice ().")]
+        public bool isTourismInvoice { get; set; }
+
         [Option('A', "amount", HelpText = "Amount Customer paid.")]
         public float? amount { get; set; }
 
@@ -31,7 +34,7 @@ namespace GarageSaleOfficeGuy
         [Option('a', "address", HelpText = "Customer address")]
         public string customerAddress{ get; set; }
 
-        [Option('v', "vatFree", HelpText = "Should the customer pay VAT.")]
+        [Option('v', "vatFree", HelpText = "Use this option if the customer is VAT free customer pay VAT.")]
         public bool vatFree { get; set; }
 
         [Option('l', "preferredLanguage", Default = "hebrew", HelpText = "Preferred language to display invoice (hebrew/arabic/english/spanish).")]
@@ -40,7 +43,7 @@ namespace GarageSaleOfficeGuy
         [Option('m', "messageForCustomer", Default = "", HelpText = "The description for the invoice.")]
         public string messageForCustomer { get; set; }
 
-        [Option('i', "isDraft", HelpText = "Is document draft?")]
+        [Option('i', "isDraft", HelpText = "Use this option to create a draft document")]
         public bool isDraft { get; set; }
     }
 }
