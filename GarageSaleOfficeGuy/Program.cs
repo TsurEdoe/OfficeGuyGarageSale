@@ -58,15 +58,6 @@ namespace GarageSaleOfficeGuy
             Accounting_Documents_Send_Request send_Request = generateSendDocumentRequest(craetedInvoiceID, options);
             Core_APIEmptyResponse sendResponse = apiClient.AccountingDocumentsSendAsync(send_Request).Result;
 
-            if (options.isTourismInvoice)
-            {
-                if (!replaceLogo(false))
-                {
-                    Console.WriteLine("Failed replacing logo in website");
-                    return -1;
-                }
-            }
-
             if (sendResponse.Status != ResponseStatus.Success)
             {
                 Console.WriteLine("Failed sending invoice: " + createResponse.UserErrorMessage);
@@ -75,6 +66,15 @@ namespace GarageSaleOfficeGuy
             else
             {
                 Console.WriteLine("Sent invoice successfully!");
+            }
+
+            if (options.isTourismInvoice)
+            {
+                if (!replaceLogo(false))
+                {
+                    Console.WriteLine("Failed replacing logo in website");
+                    return -1;
+                }
             }
 
             if (options.isDraft)
@@ -92,10 +92,11 @@ namespace GarageSaleOfficeGuy
         static private bool replaceLogo(bool changeToTourism)
         {
             string resourceName = changeToTourism ? "tourism" : "garage_sale";
+            string invoiceTitle = changeToTourism ? "הנעה וליווי עסקים וקהילות בתחומי קיימות ותיירות" : "בחצר האחורית גראז' סייל - לשחרר ולאפשר לשפע להיכנס";
             Console.WriteLine("Replacing logo in website to " + resourceName + " logo");
             Website_Companies_Update_Request request = new Website_Companies_Update_Request
             {
-                Company = generateGarageSaleCompanyDetails(resourceName),
+                Company = generateGarageSaleCompanyDetails(resourceName, invoiceTitle),
                 Credentials = generateGarageSaleCredentials()
             };
             return apiClient.WebsiteCompaniesUpdateAsync(request).Result.Status == ResponseStatus.Success;
@@ -196,19 +197,19 @@ namespace GarageSaleOfficeGuy
             return paymentDoc;
         }
 
-        static private Website_Typed_Company generateGarageSaleCompanyDetails(string resourceName)
+        static private Website_Typed_Company generateGarageSaleCompanyDetails(string resourceName, string invoiceTitle)
         {
             byte[] chosenLogo = (byte[])Properties.Resources.ResourceManager.GetObject(resourceName);
-
+            
             return new Website_Typed_Company()
             {
                 Name = "מאירה צור",
                 EmailAddress = "tsur.meira@gmail.com",
                 Country = "ישראל",
                 Address = "מושב ציפורי",
-                Phone = "0506890998",
+                Phone = "050-6890998",
                 Fax = null,
-                Title = "הנעה וליווי עסקים וקהילות בתחומי קיימות ותיירות",
+                Title = invoiceTitle,
                 CorporateNumber = "028466563",
                 English_Name = null,
                 English_Address = null,
