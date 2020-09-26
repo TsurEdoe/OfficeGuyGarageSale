@@ -237,3 +237,4 @@ C:\Users\tsure\source\repos\GarageSaleOfficeGuy\GarageSaleOfficeGuy\obj\Release\
 C:\Users\tsure\source\repos\GarageSaleOfficeGuy\GarageSaleOfficeGuy\obj\Release\netcoreapp3.1\win-x86\GarageSaleOfficeGuy.genruntimeconfig.cache
 C:\Users\tsure\source\repos\GarageSaleOfficeGuy\GarageSaleOfficeGuy\obj\Release\netcoreapp3.1\win-x86\GarageSaleOfficeGuy.Properties.Resources.resources
 C:\Users\tsure\source\repos\GarageSaleOfficeGuy\GarageSaleOfficeGuy\obj\Release\netcoreapp3.1\win-x86\GarageSaleOfficeGuy.csproj.GenerateResource.cache
+C:\Users\tsure\source\repos\GarageSaleOfficeGuy\GarageSaleOfficeGuy\obj\Release\netcoreapp3.1\win-x86\GarageSaleOfficeGuy.csprojAssemblyReference.cache
