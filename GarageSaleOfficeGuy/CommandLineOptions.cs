@@ -42,5 +42,8 @@ namespace GarageSaleOfficeGuy
 
         [Option('i', "items", Default = "", HelpText = "Items for the invoice.")]
         public string items { get; set; }
+
+        [Option('s', "sendDocument", HelpText = "Should the invoice be sent.")]
+        public bool sendDocument{ get; set; }
     }
 }

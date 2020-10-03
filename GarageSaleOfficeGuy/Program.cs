@@ -58,11 +58,6 @@ namespace GarageSaleOfficeGuy
             }
 
             Console.WriteLine("Created invoice successfully!");
-            if (options.customerEmail == null)
-            {
-                Console.WriteLine("No customer email specified, not sending document.");
-                return 0;
-            }
 
             long craetedInvoiceID = createResponse.Data.DocumentID;
 
@@ -256,7 +251,7 @@ namespace GarageSaleOfficeGuy
                 documentDetails.Description = options.messageForCustomer;
             }
 
-            if(!options.isDraft)
+            if(options.sendDocument)
             {
                 documentDetails.SendByEmail = generateSendByEmail(options.customerEmail);
             }
