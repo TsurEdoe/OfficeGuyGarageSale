@@ -13,12 +13,6 @@ namespace GarageSaleOfficeGuy
         [Option('P', "payment", HelpText = "Payment method (Cash, Credit, BankTransfer, Bit, PayBox, Cheque")]
         public PaymentMethod? paymentMethod { get; set; }
 
-        [Option('D', "firstDescription", HelpText = "Main description")]
-        public string mainDescription { get; set; }
-        
-        [Option('d', "secDescription", HelpText = "Secondary description")]
-        public string secondaryDescription { get; set; }
-
         [Option('n', "name", HelpText = "Customer name.")]
         public string customerName { get; set; }
 
@@ -43,7 +37,10 @@ namespace GarageSaleOfficeGuy
         [Option('m', "messageForCustomer", Default = "", HelpText = "The description for the invoice.")]
         public string messageForCustomer { get; set; }
 
-        [Option('i', "isDraft", HelpText = "Use this option to create a draft document")]
+        [Option('d', "isDraft", HelpText = "Use this option to create a draft document")]
         public bool isDraft { get; set; }
+
+        [Option('i', "items", Default = "", HelpText = "Items for the invoice.")]
+        public string items { get; set; }
     }
 }

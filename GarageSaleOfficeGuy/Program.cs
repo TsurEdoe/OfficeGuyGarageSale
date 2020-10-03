@@ -15,19 +15,19 @@ namespace GarageSaleOfficeGuy
             Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsed<CommandLineOptions>(o => 
             {
                 if (o.customerName == null || o.customerPhoneNumer == null || o.amount == null || 
-                o.paymentMethod == null || o.mainDescription == null || o.secondaryDescription == null)
+                o.paymentMethod == null || o.items == null)
                 {
                     Console.WriteLine("Not enough arguments given (name, phone, price, pay method, main description, secondary description)");
                     Console.ReadKey();
                     return;
                 }
-                result = (int)sendInvoiceToCustomer(o);
+                result = (int)createAndSendInvoiceToCustomer(o);
             });
 
             return result;
         }
 
-        static private long? sendInvoiceToCustomer(CommandLineOptions options)
+        static private long? createAndSendInvoiceToCustomer(CommandLineOptions options)
         {
             if (options.isTourismInvoice)
             {
@@ -40,6 +40,17 @@ namespace GarageSaleOfficeGuy
 
             Accounting_Documents_Create_Request invoiceCreateRequest = createInvoiceDocument(options);
             Response_Accounting_Documents_Create_Response createResponse = apiClient.AccountingDocumentsCreateAsync(invoiceCreateRequest).Result;
+
+            if (options.isTourismInvoice)
+            {
+                System.Threading.Thread.Sleep(5000);
+                if (!replaceLogo(false))
+                {
+                    Console.WriteLine("Failed replacing logo in website");
+                    return -1;
+                }
+            }
+
             if (createResponse.Status != ResponseStatus.Success)
             {
                 Console.WriteLine("Failed creating invoice: " + createResponse.UserErrorMessage);
@@ -55,32 +66,14 @@ namespace GarageSaleOfficeGuy
 
             long craetedInvoiceID = createResponse.Data.DocumentID;
 
-            Accounting_Documents_Send_Request send_Request = generateSendDocumentRequest(craetedInvoiceID, options);
-            Core_APIEmptyResponse sendResponse = apiClient.AccountingDocumentsSendAsync(send_Request).Result;
-
-            if (sendResponse.Status != ResponseStatus.Success)
+            if (options.isDraft)
             {
-                Console.WriteLine("Failed sending invoice: " + createResponse.UserErrorMessage);
-                return -1;
+                Console.WriteLine("Invoice is draft, returning the document id");
+                return craetedInvoiceID;
             }
             else
             {
                 Console.WriteLine("Sent invoice successfully!");
-            }
-
-            if (options.isTourismInvoice)
-            {
-                if (!replaceLogo(false))
-                {
-                    Console.WriteLine("Failed replacing logo in website");
-                    return -1;
-                }
-            }
-
-            if (options.isDraft)
-            {
-                Console.WriteLine("Invoice is draft, not returning the invoice id");
-                return 0;
             }
 
             return createResponse.Data.DocumentNumber;
@@ -94,6 +87,7 @@ namespace GarageSaleOfficeGuy
             string resourceName = changeToTourism ? "tourism" : "garage_sale";
             string invoiceTitle = changeToTourism ? "הנעה וליווי עסקים וקהילות בתחומי קיימות ותיירות" : "בחצר האחורית גראז' סייל - לשחרר ולאפשר לשפע להיכנס";
             Console.WriteLine("Replacing logo in website to " + resourceName + " logo");
+            Console.WriteLine(Properties.Resources.ResourceManager.GetObject(resourceName).ToString().Length);
             Website_Companies_Update_Request request = new Website_Companies_Update_Request
             {
                 Company = generateGarageSaleCompanyDetails(resourceName, invoiceTitle),
@@ -102,29 +96,40 @@ namespace GarageSaleOfficeGuy
             return apiClient.WebsiteCompaniesUpdateAsync(request).Result.Status == ResponseStatus.Success;
         }
 
-        static private Accounting_Documents_Send_Request generateSendDocumentRequest(long documentID, CommandLineOptions options)
-        {
-            return new Accounting_Documents_Send_Request()
-            {
-                Credentials = generateGarageSaleCredentials(),
-                EntityID = documentID,
-                DocumentType = Accounting_Typed_DocumentType.InvoiceAndReceipt,
-                EmailAddress = options.customerEmail,
-                Original = true,
-                Language = getPreferredLanguage(options.preferredLanguage)
-            };
-        }
-
         static private Accounting_Documents_Create_Request createInvoiceDocument(CommandLineOptions options)
         {
             return new Accounting_Documents_Create_Request()
             {
                 Details = generateDocumentDetails(options),
-                Items = new List<Accounting_Typed_DocumentItem>() { generateItem(options.amount, options.mainDescription, options.secondaryDescription) },
+                Items = generateItems(options.items),
                 Payments = new List<Accounting_Typed_DocumentPayment> { generatePayment(options.amount, options.paymentMethod) },
                 VATIncluded = true,
                 Credentials = generateGarageSaleCredentials()
             };
+        }
+
+        static private List<Accounting_Typed_DocumentItem> generateItems(string itemsString)
+        {
+            List<Accounting_Typed_DocumentItem> itemList = new List<Accounting_Typed_DocumentItem>();
+            if (itemsString == "")
+            {
+                itemList.Add(generateItem(0, "", ""));
+                return itemList;
+            }
+
+            foreach (string element in itemsString.Split(';'))
+            {
+                string[] singleRowData = element.Split('!');
+                if (singleRowData.Length != 3)
+                {
+                    continue;
+                }
+                
+                float currentAmount = (singleRowData[0] == "") ? 0 : float.Parse(singleRowData[0]);
+                itemList.Add(generateItem(currentAmount, singleRowData[1], singleRowData[2]));
+            }
+
+            return itemList;
         }
 
         static private Accounting_Typed_DocumentItem generateItem(float? amountPaid, string mainDescription, string secondaryDescription)
@@ -241,7 +246,6 @@ namespace GarageSaleOfficeGuy
                                             options.vatFree,
                                             options.customerCity,
                                             options.customerAddress),
-                SendByEmail = generateSendByEmail(options.customerEmail),
                 Language = getPreferredLanguage(options.preferredLanguage),
                 Currency = Accounting_Typed_DocumentCurrency.ILS,
                 Type = Accounting_Typed_DocumentType.InvoiceAndReceipt
@@ -250,6 +254,11 @@ namespace GarageSaleOfficeGuy
             if(options.messageForCustomer != "")
             {
                 documentDetails.Description = options.messageForCustomer;
+            }
+
+            if(!options.isDraft)
+            {
+                documentDetails.SendByEmail = generateSendByEmail(options.customerEmail);
             }
            
             return documentDetails;
