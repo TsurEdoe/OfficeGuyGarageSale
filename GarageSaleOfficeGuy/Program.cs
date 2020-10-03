@@ -11,20 +11,20 @@ namespace GarageSaleOfficeGuy
 
         static int Main(string[] args)
         {
-            int result = -1;
+            long result = -1;
             Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsed<CommandLineOptions>(o => 
             {
-                if (o.customerName == null || o.customerPhoneNumer == null || o.amount == null || 
-                o.paymentMethod == null || o.items == null)
+                if (o.finalizeDocument != -1)
                 {
-                    Console.WriteLine("Not enough arguments given (name, phone, price, pay method, main description, secondary description)");
-                    Console.ReadKey();
-                    return;
+                    result = finalizeAndSendDocument(o);
                 }
-                result = (int)createAndSendInvoiceToCustomer(o);
+                else
+                {
+                    result = (int)createAndSendInvoiceToCustomer(o);
+                }
             });
 
-            return result;
+            return (int)result;
         }
 
         static private long? createAndSendInvoiceToCustomer(CommandLineOptions options)
@@ -72,6 +72,61 @@ namespace GarageSaleOfficeGuy
             }
 
             return createResponse.Data.DocumentNumber;
+        }
+
+        static long finalizeAndSendDocument(CommandLineOptions options)
+        {
+            Accounting_Documents_MoveToBooks_Request moveToBooks_Request = new Accounting_Documents_MoveToBooks_Request()
+            {
+                Credentials = generateGarageSaleCredentials(),
+                DocumentID = options.finalizeDocument
+            };
+            Response_Accounting_Documents_MoveToBooks_Response finalizeResponse = apiClient.AccountingDocumentsMoveToBooksAsync(moveToBooks_Request).Result;
+
+            if (finalizeResponse.Status != ResponseStatus.Success)
+            {
+                Console.WriteLine("Failed finalizing invoice: " + finalizeResponse.UserErrorMessage);
+                return -1;
+            }
+
+            Console.WriteLine("Finalized invoice successfully, sending invoice");
+
+            Accounting_Documents_Send_Request send_Request = generateSendDocumentRequest(options);
+            Core_APIEmptyResponse sendResponse = apiClient.AccountingDocumentsSendAsync(send_Request).Result;
+            if (sendResponse.Status != ResponseStatus.Success)
+            {
+                Console.WriteLine("Failed sending invoice: " + sendResponse.UserErrorMessage);
+                return -1;
+            }
+
+            Accounting_Documents_GetDetails_Request getDetails_Request = new Accounting_Documents_GetDetails_Request()
+            {
+                Credentials = generateGarageSaleCredentials(),
+                DocumentID = options.finalizeDocument,
+                DocumentType = Accounting_Typed_DocumentType.InvoiceAndReceipt
+            };
+
+            Response_Accounting_Documents_GetDetails_Response getDetailsResponse = apiClient.AccountingDocumentsGetDetailsAsync(getDetails_Request).Result;
+            if (getDetailsResponse.Status != ResponseStatus.Success)
+            {
+                Console.WriteLine("Failed getting invoice number: " + finalizeResponse.UserErrorMessage);
+                return -1;
+            }
+
+            return (long)getDetailsResponse.Data.DocumentNumber;
+        }
+
+        static private Accounting_Documents_Send_Request generateSendDocumentRequest(CommandLineOptions options)
+        {
+            return new Accounting_Documents_Send_Request()
+            {
+                Credentials = generateGarageSaleCredentials(),
+                EntityID = options.finalizeDocument,
+                DocumentType = Accounting_Typed_DocumentType.InvoiceAndReceipt,
+                EmailAddress = options.customerEmail,
+                Original = true,
+                Language = getPreferredLanguage(options.preferredLanguage)
+            };
         }
 
         /**

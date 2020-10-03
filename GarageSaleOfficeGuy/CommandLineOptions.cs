@@ -45,5 +45,8 @@ namespace GarageSaleOfficeGuy
 
         [Option('s', "sendDocument", HelpText = "Should the invoice be sent.")]
         public bool sendDocument{ get; set; }
+
+        [Option('f', "finalizeDocument", Default = -1 ,HelpText = "Finalize a draft invoice.")]
+        public long finalizeDocument { get; set; }
     }
 }
