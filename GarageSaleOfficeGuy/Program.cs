@@ -14,6 +14,15 @@ namespace GarageSaleOfficeGuy
             long result = -1;
             Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsed<CommandLineOptions>(o => 
             {
+                if (o.isTourismInvoice)
+                {
+                    if (!replaceLogo(true))
+                    {
+                        Console.WriteLine("Failed replacing logo in website");
+                        result = -1;
+                    }
+                }
+
                 if (o.finalizeDocument != -1)
                 {
                     result = finalizeAndSendDocument(o);
@@ -22,6 +31,16 @@ namespace GarageSaleOfficeGuy
                 {
                     result = (int)createAndSendInvoiceToCustomer(o);
                 }
+
+                if (o.isTourismInvoice)
+                {
+                    System.Threading.Thread.Sleep(5000);
+                    if (!replaceLogo(false))
+                    {
+                        Console.WriteLine("Failed replacing logo in website");
+                        result = -1;
+                    }
+                }
             });
 
             return (int)result;
@@ -29,27 +48,8 @@ namespace GarageSaleOfficeGuy
 
         static private long? createAndSendInvoiceToCustomer(CommandLineOptions options)
         {
-            if (options.isTourismInvoice)
-            {
-                if(!replaceLogo(true))
-                {
-                    Console.WriteLine("Failed replacing logo in website");
-                    return -1;
-                }
-            }
-
             Accounting_Documents_Create_Request invoiceCreateRequest = createInvoiceDocument(options);
             Response_Accounting_Documents_Create_Response createResponse = apiClient.AccountingDocumentsCreateAsync(invoiceCreateRequest).Result;
-
-            if (options.isTourismInvoice)
-            {
-                System.Threading.Thread.Sleep(5000);
-                if (!replaceLogo(false))
-                {
-                    Console.WriteLine("Failed replacing logo in website");
-                    return -1;
-                }
-            }
 
             if (createResponse.Status != ResponseStatus.Success)
             {
@@ -86,7 +86,7 @@ namespace GarageSaleOfficeGuy
             if (finalizeResponse.Status != ResponseStatus.Success)
             {
                 Console.WriteLine("Failed finalizing invoice: " + finalizeResponse.UserErrorMessage);
-                return -1;
+                return -3;
             }
 
             Console.WriteLine("Finalized invoice successfully, sending invoice");
@@ -96,7 +96,7 @@ namespace GarageSaleOfficeGuy
             if (sendResponse.Status != ResponseStatus.Success)
             {
                 Console.WriteLine("Failed sending invoice: " + sendResponse.UserErrorMessage);
-                return -1;
+                return -2;
             }
 
             Accounting_Documents_GetDetails_Request getDetails_Request = new Accounting_Documents_GetDetails_Request()
@@ -110,7 +110,7 @@ namespace GarageSaleOfficeGuy
             if (getDetailsResponse.Status != ResponseStatus.Success)
             {
                 Console.WriteLine("Failed getting invoice number: " + finalizeResponse.UserErrorMessage);
-                return -1;
+                return -4;
             }
 
             return (long)getDetailsResponse.Data.DocumentNumber;
