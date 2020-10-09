@@ -2,7 +2,7 @@
   "profiles": {
     "GarageSaleOfficeGuy": {
       "commandName": "Project",
-      "commandLineArgs": "-f 76173471"
+      "commandLineArgs": "-i \"1!ייצור חשמל סולרי - מספר חוזה 345296701, המלצת חשבון מספר !;\" -A 1 -P General -n \"חברת חשמל\" -e tsur.rami@gmail.com -p 972549997 -d"
     }
   }
 }

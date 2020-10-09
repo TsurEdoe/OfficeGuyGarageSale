@@ -8,6 +8,7 @@ namespace GarageSaleOfficeGuy
         BIT,
         PayBox,
         PepperPay,
-        Cheque
+        Cheque,
+        General
     }
 }

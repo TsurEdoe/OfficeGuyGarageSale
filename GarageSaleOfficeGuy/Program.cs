@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using CommandLine;
 using OfficeGuy.APIs;
 
@@ -61,6 +62,11 @@ namespace GarageSaleOfficeGuy
 
             long craetedInvoiceID = createResponse.Data.DocumentID;
 
+            if (!options.sendWhatsapp.Equals(""))
+            {
+                sendDocumentToWhatsapp(options.customerPhoneNumer, craetedInvoiceID, options.sendWhatsapp);
+            }
+
             if (options.isDraft)
             {
                 Console.WriteLine("Invoice is draft, returning the document id");
@@ -68,7 +74,7 @@ namespace GarageSaleOfficeGuy
             }
             else
             {
-                Console.WriteLine("Sent invoice successfully!");
+                Console.WriteLine("Sent invoice successfully to email!");
             }
 
             return createResponse.Data.DocumentNumber;
@@ -99,21 +105,58 @@ namespace GarageSaleOfficeGuy
                 return -2;
             }
 
+            Accounting_Documents_GetDetails_Response documentDetails = getDocumentDetails(options.finalizeDocument);
+            if (documentDetails == null)
+            {
+                return -4;
+            }
+
+            if (!options.sendWhatsapp.Equals(""))
+            {
+                sendDocumentToWhatsapp(options.customerPhoneNumer, documentDetails.DocumentID, options.sendWhatsapp);
+            }
+
+            return (long)documentDetails.DocumentNumber;
+        }
+
+        static private void sendDocumentToWhatsapp(string phoneNumer, long documentId, string message)
+        {
+            string documentDownloadURL = getDocumentDetails(documentId).DocumentDownloadURL;
+            string messagToSend = message + "\n" + documentDownloadURL;
+            string fixedPhone = phoneNumer.Replace("-", "");
+            fixedPhone = fixedPhone.Replace("+", "");
+            if (fixedPhone.StartsWith('0'))
+            {
+                fixedPhone = "972" + fixedPhone.Substring(1);
+            }
+
+            string url = String.Format("https://wa.me/{0}?text={1}", fixedPhone, messagToSend);
+
+            var psi = new ProcessStartInfo
+            {
+                FileName = url,
+                UseShellExecute = true
+            };
+            Process.Start(psi);
+        }
+
+        static private Accounting_Documents_GetDetails_Response getDocumentDetails(long documentId)
+        {
             Accounting_Documents_GetDetails_Request getDetails_Request = new Accounting_Documents_GetDetails_Request()
             {
                 Credentials = generateGarageSaleCredentials(),
-                DocumentID = options.finalizeDocument,
+                DocumentID = documentId,
                 DocumentType = Accounting_Typed_DocumentType.InvoiceAndReceipt
             };
 
             Response_Accounting_Documents_GetDetails_Response getDetailsResponse = apiClient.AccountingDocumentsGetDetailsAsync(getDetails_Request).Result;
             if (getDetailsResponse.Status != ResponseStatus.Success)
             {
-                Console.WriteLine("Failed getting invoice number: " + finalizeResponse.UserErrorMessage);
-                return -4;
+                Console.WriteLine("Failed getting invoice number: " + getDetailsResponse.UserErrorMessage);
+                return null;
             }
 
-            return (long)getDetailsResponse.Data.DocumentNumber;
+            return getDetailsResponse.Data;
         }
 
         static private Accounting_Documents_Send_Request generateSendDocumentRequest(CommandLineOptions options)
@@ -244,8 +287,11 @@ namespace GarageSaleOfficeGuy
                         Type = "צ'ק"
                     };
                     break;
-                default:
-                    paymentDoc.Details_General = new Accounting_Typed_Payment_General();
+                case PaymentMethod.General:
+                    paymentDoc.Details_Other = new Accounting_Typed_Payment_Other()
+                    {
+                        Type = "כללי"
+                    };
                     break;
             }
 

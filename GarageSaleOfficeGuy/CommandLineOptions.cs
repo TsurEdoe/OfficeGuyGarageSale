@@ -48,5 +48,8 @@ namespace GarageSaleOfficeGuy
 
         [Option('f', "finalizeDocument", Default = -1 ,HelpText = "Finalize a draft invoice.")]
         public long finalizeDocument { get; set; }
+
+        [Option('w', "sendWhatsapp", Default = "", HelpText = "Send a WhatsApp message")]
+        public string sendWhatsapp { get; set; }
     }
 }
